@@ -81,7 +81,7 @@ const href=c=>{c=String(c||"").trim();if(!c)return"";return c.includes("@")?"mai
 const mine=d=>!!(d.by&&d.by===ME),dayLeft=a=>Math.ceil((a.until-Date.now())/864e5);
 const open_=h=>{$("sheet").innerHTML=h;$("m").classList.add("open")},close_=()=>$("m").classList.remove("open");
 $("m").onclick=e=>{if(e.target===$("m"))close_()};
-function rebuild(){const m={};CATS0.forEach(c=>m[c[0]]=c);cdb.forEach(d=>m[d.key]=[d.key,d.bn,d.en||d.bn,d.subs||[]]);CATS=Object.keys(m).map(k=>m[k])}
+function rebuild(){const m={};CATS0.forEach(c=>m[c[0]]=c);cdb.forEach(d=>m[d.key]=[d.key,d.bn,d.en||d.bn,(d.subs||[]).map(x=>Array.isArray(x)?x:[x.k,x.bn,x.en])]);CATS=Object.keys(m).map(k=>m[k])}
 const trains=()=>tdb.length?tdb:SEEDTR;
 
 function bellItems(){const o=[];if(!ME)return o;notices.filter(n=>n.to===ME).sort((a,b)=>b.ts-a.ts).forEach(n=>o.push(LANG==="bn"?n.bn:n.en));ads.forEach(a=>{if(mine(a)&&a.until){const d=dayLeft(a);if(d<=2&&d>=0)o.push(t("expiry").replace("%d",d))}});return o}
@@ -199,7 +199,7 @@ function tabsAdmin(){
   $("sheet").querySelectorAll("[data-sv]").forEach(b=>b.onclick=async()=>{
     const cd=b.closest(".card"),old=cd.dataset.i!=null?CATS[+cd.dataset.i]:null,key=old?old[0]:"c"+Date.now();
     const bn=cd.querySelector(".cb").value.trim(),en=cd.querySelector(".ce").value.trim()||bn;if(!bn){toast(t("needname"));return}
-    const subs=cd.querySelector(".cs").value.split("\n").map(x=>x.trim()).filter(Boolean).map((l,j)=>{const p=l.split("|"),k=old&&old[3][j]?old[3][j][0]:"s"+Date.now().toString(36)+j;return[k,p[0].trim(),(p[1]||p[0]).trim()]});
+    const subs=cd.querySelector(".cs").value.split("\n").map(x=>x.trim()).filter(Boolean).map((l,j)=>{const p=l.includes("|")?l.split("|"):l.split("/"),k=old&&old[3][j]?old[3][j][0]:"s"+Date.now().toString(36)+j;return{k:k,bn:p[0].trim(),en:(p[1]||p[0]).trim()}});
     try{await setDoc(doc(db,"cats",key),{key,bn,en,subs,ts:Date.now()});toast(t("saved"))}catch(e){toast(t("failed"))}});
   $("sheet").querySelectorAll("[data-dl]").forEach(b=>b.onclick=async()=>{const c=CATS[+b.closest(".card").dataset.i];if(!cdb.some(d=>d.key===c[0])){toast(t("builtin"));return}try{await deleteDoc(doc(db,"cats",c[0]));toast(t("ok2"))}catch(e){toast(t("failed"))}});
 }
