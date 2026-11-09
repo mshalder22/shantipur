@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f4c3a">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>আমাদের শান্তিপুর</title>
+<style>
+:root{--bg:#f7f3ec;--card:#fff;--text:#1d2320;--muted:#6b7280;--gold:#b8892f;--green:#0f4c3a;--chip:#ece4d4;--border:#e5dccb}
+@media (prefers-color-scheme:dark){:root{--bg:#10130f;--card:#1a1f1a;--text:#f0ebdf;--muted:#a1a89c;--gold:#e0b25a;--chip:#252b24;--border:#303830}}
+*{box-sizing:border-box}
+body{margin:0;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0);background:var(--bg);color:var(--text);font-family:"Noto Sans Bengali","Hind Siliguri",system-ui,sans-serif;line-height:1.5}
+.hero{margin:12px 14px 0;padding:20px 18px;border-radius:22px;background:linear-gradient(135deg,#0b3a2c,#136b4f 60%,#b8892f);color:#fff}
+.hero h1{margin:0;font-size:27px}.hero p{margin:4px 0 8px;opacity:.9;font-size:14px}.stat{font-size:13px;margin-bottom:6px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.pill{border:0;padding:8px 13px;border-radius:20px;font:inherit;font-size:13px;cursor:pointer;background:#fff;color:#0b3a2c;font-weight:600}.pill.ghost{background:rgba(255,255,255,.2);color:#fff}
+.ad{margin:12px 14px 0;border-radius:18px;padding:14px 16px;background:linear-gradient(120deg,#1b1b1b,#3a2e12);color:#f6e7bf;border:1px solid #b8892f;position:relative;min-height:84px}
+.ad .tag{position:absolute;top:8px;right:12px;font-size:11px;letter-spacing:1px;color:#e0b25a;border:1px solid #e0b25a;border-radius:8px;padding:0 6px}
+.ad h3{margin:0 0 2px;font-size:17px;color:#ffd978}.ad p{margin:0;font-size:13px;opacity:.9}.ad a{color:#ffd978;font-size:13px}
+.bar{padding:12px 14px 4px}
+input,select,textarea{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:12px;background:var(--card);color:var(--text);font:inherit}
+.tabs{display:flex;gap:8px;padding:6px 14px;overflow-x:auto}
+.tab{flex:none;padding:8px 14px;border-radius:20px;border:1px solid var(--border);background:var(--chip);color:var(--text);font:inherit;cursor:pointer}
+.tab.on{background:var(--green);color:#fff;border-color:var(--green)}.tab.sub{font-size:13px;padding:5px 12px;background:transparent}.tab.sub.on{background:var(--gold);border-color:var(--gold);color:#fff}
+#list{padding:8px 14px 40px;display:grid;gap:10px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,.04)}
+.card h3{margin:0;font-size:17px}.meta{color:var(--muted);font-size:13px}.card p{margin:6px 0 10px;font-size:14px}
+.btns{display:flex;gap:8px}
+.btns a,.btns button{flex:1;text-align:center;padding:9px;border-radius:10px;border:0;text-decoration:none;font:inherit;font-size:14px;background:var(--green);color:#fff;cursor:pointer}
+.btns .alt{background:var(--chip);color:var(--text)}.btns .no{background:#9b2c2c}
+.sample{font-size:11px;color:var(--gold)}.empty{text-align:center;color:var(--muted);padding:24px}
+.next{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold)}.tm{font-size:20px;font-weight:700}.note{margin:4px 14px;font-size:12px;color:var(--muted)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:flex-end;justify-content:center;z-index:20}.modal.open{display:flex}
+.sheet{background:var(--bg);width:100%;max-width:560px;max-height:90%;overflow:auto;border-radius:22px 22px 0 0;padding:18px 16px 24px}
+.sheet h2{margin:0 0 10px;font-size:20px}.sheet label{display:block;margin:10px 0 4px;font-size:13px;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#111;color:#fff;padding:10px 16px;border-radius:20px;font-size:14px;z-index:30;display:none;max-width:90%}
+</style>
+</head>
+<body>
+<div class="hero" id="hero">
+  <h1 id="h1"></h1><p id="tg"></p><div class="stat" id="stat"></div>
+  <div class="row"><button class="pill" id="langBtn"></button><button class="pill ghost" id="loginBtn"></button><button class="pill ghost" id="bellBtn"></button></div>
+  <div class="row"><button class="pill" id="addBtn"></button><button class="pill ghost" id="adBtn"></button><button class="pill ghost" id="admBtn" style="display:none"></button><button class="pill ghost" id="stBtn" style="display:none"></button></div>
+</div>
+<div class="ad" id="ad"></div>
+<div class="bar"><input id="q"></div>
+<div class="tabs" id="tabs"></div><div class="tabs" id="subs"></div>
+<div class="bar" id="stbar" style="display:none;padding-top:4px"><input id="sq" list="stl"><datalist id="stl"></datalist></div>
+<div id="list"></div>
+<div class="modal" id="m"><div class="sheet" id="sheet"></div></div><div class="toast" id="toast"></div>
+
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import{getAuth,onAuthStateChanged,signInWithEmailAndPassword,createUserWithEmailAndPassword,signOut,sendPasswordResetEmail}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import{getFirestore,collection,doc,getDoc,getDocs,setDoc,addDoc,updateDoc,deleteDoc,onSnapshot,query,where,orderBy,limit,increment,writeBatch}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+const app=initializeApp({apiKey:"AIzaSyAdArgkUrcaiqqrjbhJX9TBG9dAtU-84pE",authDomain:"our-santipur.firebaseapp.com",projectId:"our-santipur",storageBucket:"our-santipur.firebasestorage.app",messagingSenderId:"1047627366845",appId:"1:1047627366845:web:ffff55f196a31f1608d2d4"});
+const auth=getAuth(app),db=getFirestore(app);
+
+const T={title:["আমাদের শান্তিপুর","Amader Shantipur"],tag:["ডাক্তার, ওষুধ, গাড়ি, ট্রেন, ঘোরার জায়গা — সব এক জায়গায়","Doctors, medicine, vehicles, trains & sights — all in one place"],users:["জন ব্যবহারকারী","users"],taps:["বার যোগাযোগ/ম্যাপ","contact/map taps"],add:["＋ তথ্য যোগ করুন","＋ Add info"],adv:["📣 বিজ্ঞাপন দিন","📣 Advertise"],adm:["🛡️ অ্যাডমিন","🛡️ Admin"],set:["⚙️ সেটিং","⚙️ Settings"],login:["🔑 লগইন","🔑 Login"],logout:["লগআউট","Log out"],lang:["English","বাংলা"],search:["খুঁজুন: ডাক্তার, ওষুধ, টোটো, ট্রেন...","Search: doctor, medicine, toto, train..."],all:["সব","All"],none:["কিছু পাওয়া যায়নি","Nothing found"],call:["📞 যোগাযোগ","📞 Contact"],map:["📍 ম্যাপ","📍 Map"],sample:["নমুনা তথ্য","Sample data"],closedn:["⏸ বন্ধ আছে (শুধু আপনি দেখছেন)","⏸ Closed (only you can see it)"],close:["⏸ বন্ধ করুন","⏸ Close"],reopen:["▶ আবার চালু","▶ Reopen"],del:["🗑 মুছুন","🗑 Delete"],sure:["নিশ্চিত? আবার চাপুন","Sure? Tap again"],cancel:["বাতিল","Cancel"],submit:["জমা দিন","Submit"],shop:["দোকান / সেবার নাম","Shop / service name"],name:["নাম","Name"],area:["এলাকা","Area"],desc:["বিবরণ","Details"],adtext:["বিজ্ঞাপনের লেখা","Ad text"],contact:["ফোন নম্বর বা ইমেল","Phone or email"],cat:["ক্যাটাগরি","Category"],sub:["সাব-ক্যাটাগরি","Sub-category"],plan:["মেয়াদ ও চার্জ","Duration & charge"],days:["দিন","days"],payto:["UPI-তে টাকা পাঠান:","Pay via UPI:"],txn:["পেমেন্টের ট্রানজ্যাকশন আইডি","Payment transaction ID"],needpay:["পেমেন্ট ID দিন","Enter payment ID"],needname:["নাম ও যোগাযোগ দিন","Enter name and contact"],aprnote:["অ্যাডমিন অনুমোদন দিলে তবেই সবার কাছে দেখা যাবে।","It shows to everyone only after admin approval."],sent:["জমা হয়েছে, অনুমোদনের অপেক্ষায়","Submitted, waiting for approval"],failed:["হয়নি, আবার চেষ্টা করুন","Failed, please try again"],noprice:["অ্যাডমিন এখনও মূল্য ঠিক করেননি","Admin has not set prices yet"],adslot:["আপনার বিজ্ঞাপন এখানে","Your ad here"],adslot2:["দোকান বা সেবার প্রচার করতে “বিজ্ঞাপন দিন” চাপুন","Tap “Advertise” to promote your shop or service"],adtag:["বিজ্ঞাপন","AD"],wtitle:["স্বাগতম","Welcome"],wdesc:["লগইন করলে তথ্য ও বিজ্ঞাপন যোগ করা যাবে। গেস্ট হিসেবে শুধু দেখা যাবে।","Log in to add info and ads. Guests can only browse."],guest:["গেস্ট হিসেবে চালিয়ে যান","Continue as guest"],needlogin:["তথ্য যোগ করতে আগে লগইন করুন","Please log in to add information"],email:["ইমেল","Email"],pass:["পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর)","Password (min 6 characters)"],signin:["লগইন","Log in"],reg:["নতুন অ্যাকাউন্ট","Create account"],forgot:["পাসওয়ার্ড ভুলে গেছেন?","Forgot password?"],resetsent:["পাসওয়ার্ড রিসেটের ইমেল পাঠানো হয়েছে","Password reset email sent"],autherr:["ইমেল বা পাসওয়ার্ড ঠিক নয়","Wrong email or password"],pend:["অনুমোদনের অপেক্ষায়","Waiting for approval"],empty:["কিছু নেই","Nothing here"],ok:["✔ অনুমোদন","✔ Approve"],no:["✖ বাতিল","✖ Reject"],shut:["বন্ধ করুন","Close"],reqx:["অনুরোধ: ","Request: "],reqdel:["মুছে ফেলা","delete"],reqclose:["বন্ধ/চালু","close/reopen"],adreq:["বিজ্ঞাপন","Ad"],pay:["পেমেন্ট ID: ","Payment ID: "],settings:["সেটিং","Settings"],photo:["ওপরের ব্যানারের ছবি","Top banner photo"],price:["বিজ্ঞাপনের মূল্য (₹)","Ad price (₹)"],save:["সেভ","Save"],saved:["সেভ হয়েছে","Saved"],bell:["🔔 বার্তা","🔔 Messages"],nomsg:["কোনো বার্তা নেই","No messages"],expiry:["আপনার বিজ্ঞাপনের মেয়াদ শেষ হতে আর %d দিন বাকি। নতুন করে বিজ্ঞাপন দিন।","Your ad expires in %d day(s). Renew it to keep it running."],trTo:["শান্তিপুর → শিয়ালদহ (যাওয়া)","Shantipur → Sealdah (going)"],trFrom:["শিয়ালদহ → শান্তিপুর (আসা)","Sealdah → Shantipur (coming)"],next:["পরের ট্রেন","Next train"],trnote:["⚠️ সময় বদলাতে পারে। যাত্রার আগে রেলের অফিসিয়াল সূত্র দেখে নিন।","⚠️ Timings may change. Check official Railways sources before travel."],arr:["পৌঁছয়","Arrives"],ok2:["হয়ে গেছে","Done"],apprAd:["আপনার বিজ্ঞাপন অনুমোদিত হয়েছে, মেয়াদ %d দিন।","Your ad has been approved for %d days."],apprL:["আপনার তথ্য অনুমোদিত হয়েছে এবং এখন সবাই দেখতে পাচ্ছে।","Your listing has been approved and is now visible to everyone."],payrec:["পেমেন্ট ID জমা হয়েছে, যাচাই চলছে।","Payment ID received, verification in progress."],mtabs:["ট্যাব পরিচালনা","Manage tabs"],mtrains:["ট্রেন পরিচালনা","Manage trains"],backup:["⬇ ব্যাকআপ","⬇ Backup"],stnq:["কোন স্টেশনে যাবেন? (যেমন: রানাঘাট, Kalyani)","Which station? (e.g. Ranaghat, Kalyani)"],trstops:["থামে","Stops"],trtip:["ট্রেন নম্বরে চাপলে পুরো সময়সূচী ও সব স্টপেজ দেখা যাবে। তালিকায় না থাকলে নিচে খুঁজুন:","Tap a train number for its full timetable and all stops. If a station is missing, search below:"],trg:["🔎 গুগলে খুঁজুন","🔎 Search on Google"],trn:["🚆 রেলের NTES","🚆 Railways NTES"],tabnote:["নাম বা সাব-ট্যাব বদলালে আগের কোনো তথ্য মুছবে না। সাব-ট্যাব প্রতি লাইনে: বাংলা | English","Editing tabs never deletes existing information. Sub-tabs, one per line: বাংলা | English"],subsl:["সাব-ট্যাব","Sub-tabs"],newtab:["নতুন ট্যাব","New tab"],builtin:["এটি মূল ট্যাব, মোছা যাবে না","Built-in tab, cannot be deleted"],imp:["নমুনা ট্রেন ডেটাবেসে আনুন (এরপর বদলানো যাবে)","Import sample trains (then editable)"],addtrain:["নতুন ট্রেন যোগ","Add a train"],fNo:["ট্রেন নম্বর","Train number"],fFrom:["কোথা থেকে","From"],fTo:["কোথায়","To"],fDep:["ছাড়ার সময়","Departure"],fArr:["পৌঁছনোর সময়","Arrival"],fVia:["যে স্টেশনগুলোতে থামে (কমা দিয়ে)","Stops at (comma separated)"]};
+const CATS0=[["medical","মেডিকেল","Medical",[["doctor","ডাক্তার","Doctor"],["hospital","হাসপাতাল","Hospital"],["clinic","ক্লিনিক","Clinic"],["pharmacy","ওষুধের দোকান","Pharmacy"]]],["vehicle","গাড়ি","Vehicles",[["toto","টোটো","Toto"],["auto","অটো","Auto"],["car","চারচাকা","Four-wheeler"],["pickup","পিকআপ ভ্যান","Pickup van"]]],["sight","দর্শনীয়","Sights",[]],["food","খাবার ও থাকা","Food & Stay",[]],["train","ট্রেন","Trains",[]]];
+const SEED=[
+{cat:"sight",name:"শ্যামচাঁদ মন্দির",name_en:"Shyamchand Temple",area:"শান্তিপুর",area_en:"Shantipur",info:"টেরাকোটার কাজের জন্য বিখ্যাত প্রাচীন মন্দির",info_en:"Old temple known for its terracotta work"},
+{cat:"sight",name:"রাসমঞ্চ ও রাস উৎসব",name_en:"Rash Mancha & Rash Utsav",area:"শান্তিপুর",area_en:"Shantipur",info:"কার্তিক মাসের রাস উৎসব শহরের প্রধান আকর্ষণ",info_en:"The Rash festival in Kartik is the town's main attraction"},
+{cat:"sight",name:"শান্তিপুরী তাঁতের বাজার",name_en:"Shantipuri handloom market",area:"শান্তিপুর",area_en:"Shantipur",info:"বিখ্যাত শান্তিপুরী শাড়ি কেনার জায়গা",info_en:"Place to buy the famous Shantipuri saree"}];
+const SEEDTR=[{no:"31528",dirn:"out",from:"Shantipur",to:"Sealdah",dep:"02:27",arr:"04:40",via:"Phulia, Habibpur, Kalinarayanpur Jn, Ranaghat Jn, Payradanga, Chakdaha, Palpara, Simurali, Madanpur, Kalyani, Kanchrapara, Halisahar, Naihati Jn, Kankinara, Shyamnagar, Ichhapur, Palta, Dum Dum, Bidhan Nagar"},{no:"31512",dirn:"out",from:"Shantipur",to:"Sealdah",dep:"03:22",arr:"05:40",via:""},{no:"31520",dirn:"out",from:"Shantipur",to:"Sealdah",dep:"08:35",arr:"10:52",via:""},{no:"31524",dirn:"out",from:"Shantipur",to:"Sealdah",dep:"11:30",arr:"13:42",via:""},{no:"31530",dirn:"out",from:"Shantipur",to:"Sealdah",dep:"15:55",arr:"18:05",via:""},{no:"31511",dirn:"in",from:"Sealdah",to:"Shantipur",dep:"04:35",arr:"",via:""},{no:"31517",dirn:"in",from:"Sealdah",to:"Shantipur",dep:"08:55",arr:"11:13",via:""},{no:"31523",dirn:"in",from:"Sealdah",to:"Shantipur",dep:"13:00",arr:"15:20",via:""},{no:"31533",dirn:"in",from:"Sealdah",to:"Shantipur",dep:"18:55",arr:"21:15",via:""},{no:"31541",dirn:"in",from:"Sealdah",to:"Shantipur",dep:"22:40",arr:"",via:""}];
+
+const $=i=>document.getElementById(i);
+const sg=k=>{try{return localStorage.getItem(k)}catch(e){return null}},ss=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
+let LANG=sg("as_l")||"bn",GUEST=sg("as_g")==="1",USER=null,ME=null,isAdmin=false,live=[],ads=[],pending=[],notices=[],cdb=[],tdb=[],CATS=CATS0.slice(),PR={},UPI="",HP="",VIS=0,TAPS=0,cat="all",sub="",dir="out",adI=0,unsubs=[];
+const t=k=>T[k][LANG==="bn"?0:1],lb=a=>a[LANG==="bn"?1:2];
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const toast=x=>{const e=$("toast");e.textContent=x;e.style.display="block";setTimeout(()=>e.style.display="none",2800)};
+const catOf=k=>CATS.find(c=>c[0]===k),subOf=(c,k)=>c&&c[3].find(x=>x[0]===k);
+const nm=(d,f)=>LANG==="en"&&d[f+"_en"]?d[f+"_en"]:(d[f]||"");
+const hay=d=>{const c=catOf(d.cat),s=subOf(c,d.sub);return[d.name,d.name_en,d.area,d.area_en,d.info,d.info_en,d.phone,c&&c[1],c&&c[2],s&&s[1],s&&s[2]].join(" ").toLowerCase()};
+const href=c=>{c=String(c||"").trim();if(!c)return"";return c.includes("@")?"mailto:"+encodeURIComponent(c):"tel:"+c.replace(/[^\d+]/g,"")};
+const mine=d=>!!(d.by&&d.by===ME),dayLeft=a=>Math.ceil((a.until-Date.now())/864e5);
+const open_=h=>{$("sheet").innerHTML=h;$("m").classList.add("open")},close_=()=>$("m").classList.remove("open");
+$("m").onclick=e=>{if(e.target===$("m"))close_()};
+function rebuild(){const m={};CATS0.forEach(c=>m[c[0]]=c);cdb.forEach(d=>m[d.key]=[d.key,d.bn,d.en||d.bn,d.subs||[]]);CATS=Object.keys(m).map(k=>m[k])}
+const trains=()=>tdb.length?tdb:SEEDTR;
+
+function bellItems(){const o=[];if(!ME)return o;notices.filter(n=>n.to===ME).sort((a,b)=>b.ts-a.ts).forEach(n=>o.push(LANG==="bn"?n.bn:n.en));ads.forEach(a=>{if(mine(a)&&a.until){const d=dayLeft(a);if(d<=2&&d>=0)o.push(t("expiry").replace("%d",d))}});return o}
+function texts(){
+  $("h1").textContent=t("title");$("tg").textContent=t("tag");$("q").placeholder=t("search");$("sq").placeholder=t("stnq");
+  $("langBtn").textContent=t("lang");$("loginBtn").textContent=USER?"👤 "+USER.email+" ✕":t("login");
+  $("addBtn").textContent=t("add");$("adBtn").textContent=t("adv");$("admBtn").textContent=t("adm")+" ("+pending.length+")";$("stBtn").textContent=t("set");
+  $("stat").textContent="👥 "+VIS+" "+t("users")+" • 📞 "+TAPS+" "+t("taps");document.documentElement.lang=LANG;
+  const n=bellItems().length;$("bellBtn").textContent=t("bell")+(n?" ("+n+")":"");
+  $("bellBtn").style.display=USER?"":"none";$("admBtn").style.display=isAdmin?"":"none";$("stBtn").style.display=isAdmin?"":"none";
+}
+function tap(){updateDoc(doc(db,"stats","main"),{taps:increment(1)}).catch(()=>{})}
+function render(){
+  texts();$("stbar").style.display="none";
+  const tb=$("tabs");tb.innerHTML="";
+  [["all",t("all")],...CATS.map(c=>[c[0],lb(c)])].forEach(c=>{const b=document.createElement("button");b.className="tab"+(c[0]===cat?" on":"");b.textContent=c[1];b.onclick=()=>{cat=c[0];sub="";render()};tb.appendChild(b)});
+  const sb=$("subs");sb.innerHTML="";const C=catOf(cat),q=$("q").value.trim().toLowerCase(),L=$("list");L.innerHTML="";
+  if(cat==="train"&&!q){renderTrains(L,sb);return}
+  if(C&&C[3].length&&!q)[["",t("all")],...C[3].map(s=>[s[0],lb(s)])].forEach(s=>{const b=document.createElement("button");b.className="tab sub"+(s[0]===sub?" on":"");b.textContent=s[1];b.onclick=()=>{sub=s[0];render()};sb.appendChild(b)});
+  const terms=q.split(/\s+/).filter(Boolean);
+  const rows=live.concat(SEED).filter(d=>{if(d.closed&&!isAdmin&&!mine(d))return false;const h=hay(d);if(terms.length)return terms.every(w=>h.includes(w));return(cat==="all"||d.cat===cat)&&(!sub||d.sub===sub)});
+  if(!rows.length)L.innerHTML=`<div class="empty">${t("none")}</div>`;
+  rows.forEach(d=>{
+    const c=document.createElement("div");c.className="card";c.style.opacity=d.closed?".55":"1";
+    const h=href(d.phone),cc=catOf(d.cat),s_=subOf(cc,d.sub),nv=nm(d,"name"),ar=nm(d,"area"),mp="https://www.google.com/maps/search/"+encodeURIComponent(nv+" "+ar+" Shantipur");
+    const mg=(isAdmin||mine(d))&&d.id?`<div class="btns" style="margin-top:8px"><button class="alt" data-x="close">${d.closed?t("reopen"):t("close")}</button><button class="no" data-x="del">${t("del")}</button></div>`:"";
+    c.innerHTML=`<h3>${esc(nv)}</h3><div class="meta">${cc?esc(lb(cc)):""}${s_?" › "+esc(lb(s_)):""}${ar?" • "+esc(ar):""}</div><p>${esc(nm(d,"info"))}</p><div class="btns">${h?`<a href="${h}">${t("call")}</a>`:""}<a class="alt" target="_blank" rel="noopener" href="${mp}">${t("map")}</a></div>${mg}${d.id?"":`<div class="sample">${t("sample")}</div>`}${d.closed?`<div class="sample">${t("closedn")}</div>`:""}`;
+    c.querySelectorAll("a").forEach(a=>a.addEventListener("click",tap));
+    c.querySelectorAll("[data-x]").forEach(b=>b.onclick=async()=>{const x=b.dataset.x;if(x==="del"&&!b.dataset.s){b.dataset.s=1;b.textContent=t("sure");return}
+      try{if(isAdmin){const r=doc(db,"listings",d.id);if(x==="del")await deleteDoc(r);else await updateDoc(r,{closed:!d.closed});toast(t("ok2"))}
+      else{await addDoc(collection(db,"submissions"),{kind:"req",act:x,target:d.id,name:d.name,cat:d.cat,area:d.area||"",info:"",phone:d.phone||"",by:ME,ts:Date.now()});toast(t("sent"))}}catch(e){toast(t("failed"))}});
+    L.appendChild(c)});
+}
+function renderTrains(L,sb){
+  [["out",t("trTo")],["in",t("trFrom")]].forEach(x=>{const b=document.createElement("button");b.className="tab sub"+(dir===x[0]?" on":"");b.textContent=x[1];b.onclick=()=>{dir=x[0];render()};sb.appendChild(b)});
+  $("stbar").style.display="block";
+  const stl={};trains().forEach(r=>[r.from,r.to,...(r.via||"").split(",")].forEach(s=>{s=(s||"").trim();if(s&&!/^shantipur$/i.test(s))stl[s]=1}));
+  $("stl").innerHTML=Object.keys(stl).sort().map(s=>`<option value="${esc(s)}">`).join("");
+  const s=$("sq").value.trim(),sl=s.toLowerCase();
+  const rows=trains().filter(r=>r.dirn===dir&&(!sl||((r.from||"")+","+(r.to||"")+","+(r.via||"")).toLowerCase().includes(sl))).sort((a,b)=>a.dep<b.dep?-1:1);
+  const n=new Date(),nw=n.getHours()*60+n.getMinutes();let nx=-1;
+  rows.forEach((r,i)=>{const p=(r.dep||"99:99").split(":");if(nx<0&&(+p[0])*60+(+p[1])>=nw)nx=i});
+  rows.forEach((r,i)=>{const c=document.createElement("div");c.className="card"+(i===nx?" next":"");
+    c.innerHTML=`<div class="meta"><a href="https://www.ixigo.com/trains/${encodeURIComponent(r.no)}" target="_blank" rel="noopener">${esc(r.no)} ↗</a>${i===nx?" • ⭐ "+t("next"):""}</div><div class="tm">${esc(r.dep)} <span class="meta">${esc(r.from)} → ${esc(r.to)}</span></div><div class="meta">${t("arr")}: ${esc(r.arr||"—")}</div>${r.via?`<div class="meta">${t("trstops")}: ${esc(r.via)}</div>`:""}`;L.appendChild(c)});
+  if(!rows.length){const e=document.createElement("div");e.className="empty";e.textContent=t("none");L.appendChild(e)}
+  const qq=dir==="out"?"Shantipur to "+s+" train time table":s+" to Shantipur train time table";
+  const f=document.createElement("div");f.className="card";
+  f.innerHTML=`<p class="meta">${t("trtip")}</p><div class="btns"><a target="_blank" rel="noopener" href="https://www.google.com/search?q=${encodeURIComponent(qq)}">${t("trg")}</a><a class="alt" target="_blank" rel="noopener" href="https://enquiry.indianrail.gov.in/ntes/">${t("trn")}</a></div>`;L.appendChild(f);
+  const nt=document.createElement("div");nt.className="note";nt.textContent=t("trnote");L.appendChild(nt);
+}
+function renderAd(){
+  const a=ads.length?ads[adI%ads.length]:null,e=$("ad");
+  if(!a){e.innerHTML=`<span class="tag">${t("adtag")}</span><h3>${t("adslot")}</h3><p>${t("adslot2")}</p>`;return}
+  const h=href(a.phone);
+  e.innerHTML=`<span class="tag">${t("adtag")}</span><h3>${esc(a.name)}</h3><p>${esc(a.info)}</p>${h?`<a href="${h}">${t("call")}</a>`:""}${isAdmin?` &nbsp; <a href="#" id="adDel">${t("del")}</a>`:""}`;
+  const dl=$("adDel");if(dl)dl.onclick=ev=>{ev.preventDefault();deleteDoc(doc(db,"ads",a.id)).then(()=>toast(t("ok2")))};
+}
+setInterval(()=>{adI++;renderAd()},5000);
+
+$("bellBtn").onclick=()=>{const l=bellItems();open_(`<h2>${t("bell")}</h2>${l.length?l.map(x=>`<div class="card" style="margin-bottom:8px">${esc(x)}</div>`).join(""):`<div class="empty">${t("nomsg")}</div>`}<div class="btns"><button class="alt" id="fx">${t("shut")}</button></div>`);$("fx").onclick=close_};
+function loginSheet(why){
+  open_(`<h2>${t("wtitle")}</h2><p class="meta">${t(why?"needlogin":"wdesc")}</p><label>${t("email")}</label><input id="le" type="email" autocomplete="email"><label>${t("pass")}</label><input id="lp" type="password" autocomplete="current-password"><div class="btns" style="margin-top:12px"><button id="lin">${t("signin")}</button><button class="alt" id="lreg">${t("reg")}</button></div><p><a href="#" id="lfg" class="meta">${t("forgot")}</a></p><div class="btns"><button class="alt" id="lg">${t("guest")}</button></div>`);
+  const em=()=>$("le").value.trim(),pw=()=>$("lp").value;
+  $("lg").onclick=()=>{GUEST=true;ss("as_g","1");close_()};
+  $("lin").onclick=async()=>{try{await signInWithEmailAndPassword(auth,em(),pw());close_()}catch(e){toast(t("autherr"))}};
+  $("lreg").onclick=async()=>{try{await createUserWithEmailAndPassword(auth,em(),pw());close_()}catch(e){toast(e.code==="auth/email-already-in-use"?t("autherr"):t("failed"))}};
+  $("lfg").onclick=async ev=>{ev.preventDefault();if(!em()){toast(t("email"));return}try{await sendPasswordResetEmail(auth,em());toast(t("resetsent"))}catch(e){toast(t("failed"))}};
+}
+$("loginBtn").onclick=()=>{if(USER)signOut(auth);else loginSheet(false)};
+$("langBtn").onclick=()=>{LANG=LANG==="bn"?"en":"bn";ss("as_l",LANG);render();renderAd()};
+const gate=f=>{if(!USER){loginSheet(true);return}f()};
+
+function form(kind){
+  const isAd=kind==="ad";let opts="";
+  if(isAd)[7,15,30].forEach(d=>opts+=`<option value="${d}"${PR["p"+d]?"":" disabled"}>${d} ${t("days")} — ${PR["p"+d]?"₹"+esc(PR["p"+d]):"—"}</option>`);
+  open_(`<h2>${isAd?t("adv"):t("add")}</h2>${isAd?"":`<label>${t("cat")}</label><select id="fc">${CATS.filter(c=>c[0]!=="train").map(c=>`<option value="${c[0]}">${esc(lb(c))}</option>`).join("")}</select><label>${t("sub")}</label><select id="fs"></select>`}<label>${isAd?t("shop"):t("name")}</label><input id="fn"><label>${t("area")}</label><input id="fa"><label>${isAd?t("adtext"):t("desc")}</label><textarea id="fi" rows="3"></textarea><label>${t("contact")}</label><input id="fp" value="${esc(USER.email)}">${isAd?`<label>${t("plan")}</label><select id="fd">${opts}</select>${PR.p7||PR.p15||PR.p30?"":`<p class="meta">${t("noprice")}</p>`}<div class="meta" style="margin-top:8px">${t("payto")} <b>${esc(UPI||"—")}</b></div><label>${t("txn")}</label><input id="ft">`:""}<div class="btns" style="margin-top:14px"><button class="alt" id="fx">${t("cancel")}</button><button id="fok">${t("submit")}</button></div><p class="meta">${t("aprnote")}</p>`);
+  if(!isAd){const fc=$("fc"),fs=$("fs"),upd=()=>{const l=catOf(fc.value)[3];fs.innerHTML=l.length?l.map(x=>`<option value="${x[0]}">${esc(lb(x))}</option>`).join(""):`<option value="">—</option>`;fs.disabled=!l.length};fc.onchange=upd;upd()}
+  $("fx").onclick=close_;
+  $("fok").onclick=async()=>{
+    const d={kind:isAd?"ad":"listing",cat:isAd?"ad":$("fc").value,sub:isAd?"":$("fs").value,name:$("fn").value.trim(),area:$("fa").value.trim(),info:$("fi").value.trim(),phone:$("fp").value.trim(),by:ME,ts:Date.now()};
+    if(!d.name||!d.phone){toast(t("needname"));return}
+    if(isAd){d.days=+$("fd").value;d.txn=$("ft").value.trim();if(!d.days){toast(t("noprice"));return}if(!d.txn){toast(t("needpay"));return}}
+    try{await addDoc(collection(db,"submissions"),d);close_();toast(isAd?t("payrec"):t("sent"))}catch(e){toast(t("failed"))}};
+}
+$("addBtn").onclick=()=>gate(()=>form("listing"));$("adBtn").onclick=()=>gate(()=>form("ad"));
+
+function adminPanel(){
+  let h=`<h2>${t("pend")} (${pending.length})</h2>`;if(!pending.length)h+=`<div class="empty">${t("empty")}</div>`;
+  pending.forEach((p,i)=>{const cc=catOf(p.cat),s_=subOf(cc,p.sub);
+    const lab=p.kind==="req"?t("reqx")+(p.act==="del"?t("reqdel"):t("reqclose")):p.kind==="ad"?t("adreq")+` (${esc(p.days)} ${t("days")}) `+t("pay")+esc(p.txn):(cc?esc(lb(cc)):"")+(s_?" › "+esc(lb(s_)):"");
+    h+=`<div class="card" style="margin-bottom:10px"><h3>${esc(p.name)}</h3><div class="meta">${lab} • ${esc(p.area)}</div><p>${esc(p.info)}<br>${esc(p.phone)}</p><div class="btns"><button data-a="${i}">${t("ok")}</button><button class="no" data-r="${i}">${t("no")}</button></div></div>`});
+  h+=`<div class="btns"><button class="alt" id="fx">${t("shut")}</button></div>`;open_(h);$("fx").onclick=close_;
+  $("sheet").querySelectorAll("[data-a]").forEach(b=>b.onclick=async()=>{
+    const p=pending[+b.dataset.a],d={...p};delete d.id;
+    try{const w=writeBatch(db);
+      if(p.kind==="req"){const r=doc(db,"listings",p.target);if(p.act==="del")w.delete(r);else{const cur=live.find(x=>x.id===p.target);w.update(r,{closed:!(cur&&cur.closed)})}}
+      else{const isA=p.kind==="ad";if(isA)d.until=Date.now()+(+d.days||7)*864e5;w.set(doc(collection(db,isA?"ads":"listings")),d);
+        if(p.by)w.set(doc(collection(db,"notices")),{to:p.by,bn:isA?T.apprAd[0].replace("%d",d.days):T.apprL[0],en:isA?T.apprAd[1].replace("%d",d.days):T.apprL[1],ts:Date.now()})}
+      w.delete(doc(db,"submissions",p.id));await w.commit();toast(t("ok2"))}catch(e){toast(t("failed"))}});
+  $("sheet").querySelectorAll("[data-r]").forEach(b=>b.onclick=async()=>{try{await deleteDoc(doc(db,"submissions",pending[+b.dataset.r].id))}catch(e){toast(t("failed"))}});
+}
+$("admBtn").onclick=adminPanel;
+
+const shrink=f=>new Promise(res=>{const r=new FileReader();r.onload=()=>{const i=new Image();i.onload=()=>{const w=Math.min(900,i.width),h=i.height*w/i.width,c=document.createElement("canvas");c.width=w;c.height=h;c.getContext("2d").drawImage(i,0,0,w,h);res(c.toDataURL("image/jpeg",.7))};i.src=r.result};r.readAsDataURL(f)});
+$("stBtn").onclick=()=>{
+  open_(`<h2>${t("settings")}</h2><label>${t("photo")}</label><input type="file" id="sf" accept="image/*"><label>UPI ID</label><input id="su" value="${esc(UPI)}"><label>${t("price")} — 7 ${t("days")}</label><input id="p7" type="number" value="${esc(PR.p7||"")}"><label>15 ${t("days")}</label><input id="p15" type="number" value="${esc(PR.p15||"")}"><label>30 ${t("days")}</label><input id="p30" type="number" value="${esc(PR.p30||"")}"><div class="btns" style="margin-top:14px"><button class="alt" id="fx">${t("cancel")}</button><button id="sok">${t("save")}</button></div><div class="btns" style="margin-top:8px"><button class="alt" id="mt">${t("mtabs")}</button><button class="alt" id="mtr">${t("mtrains")}</button><button class="alt" id="bk">${t("backup")}</button></div>`);
+  $("fx").onclick=close_;$("mt").onclick=tabsAdmin;$("mtr").onclick=trainsAdmin;$("bk").onclick=backup;
+  $("sok").onclick=async()=>{try{const o={upi:$("su").value.trim(),p7:$("p7").value,p15:$("p15").value,p30:$("p30").value,photo:HP},f=$("sf").files[0];if(f)o.photo=await shrink(f);await setDoc(doc(db,"settings","main"),o);close_();toast(t("saved"))}catch(e){toast(t("failed"))}};
+};
+function tabsAdmin(){
+  let h=`<h2>${t("mtabs")}</h2><p class="meta">${t("tabnote")}</p>`;
+  CATS.forEach((c,i)=>{if(c[0]==="train")return;h+=`<div class="card" style="margin-bottom:10px" data-i="${i}"><label>বাংলা</label><input class="cb" value="${esc(c[1])}"><label>English</label><input class="ce" value="${esc(c[2])}"><label>${t("subsl")}</label><textarea class="cs" rows="3">${esc(c[3].map(s=>s[1]+" | "+s[2]).join("\n"))}</textarea><div class="btns" style="margin-top:8px"><button data-sv>${t("save")}</button><button class="no" data-dl>${t("del")}</button></div></div>`});
+  h+=`<div class="card"><h3>${t("newtab")}</h3><label>বাংলা</label><input class="cb"><label>English</label><input class="ce"><label>${t("subsl")}</label><textarea class="cs" rows="3"></textarea><div class="btns" style="margin-top:8px"><button data-sv>${t("save")}</button></div></div><div class="btns" style="margin-top:10px"><button class="alt" id="fx">${t("shut")}</button></div>`;
+  open_(h);$("fx").onclick=close_;
+  $("sheet").querySelectorAll("[data-sv]").forEach(b=>b.onclick=async()=>{
+    const cd=b.closest(".card"),old=cd.dataset.i!=null?CATS[+cd.dataset.i]:null,key=old?old[0]:"c"+Date.now();
+    const bn=cd.querySelector(".cb").value.trim(),en=cd.querySelector(".ce").value.trim()||bn;if(!bn){toast(t("needname"));return}
+    const subs=cd.querySelector(".cs").value.split("\n").map(x=>x.trim()).filter(Boolean).map((l,j)=>{const p=l.split("|"),k=old&&old[3][j]?old[3][j][0]:"s"+Date.now().toString(36)+j;return[k,p[0].trim(),(p[1]||p[0]).trim()]});
+    try{await setDoc(doc(db,"cats",key),{key,bn,en,subs,ts:Date.now()});toast(t("saved"))}catch(e){toast(t("failed"))}});
+  $("sheet").querySelectorAll("[data-dl]").forEach(b=>b.onclick=async()=>{const c=CATS[+b.closest(".card").dataset.i];if(!cdb.some(d=>d.key===c[0])){toast(t("builtin"));return}try{await deleteDoc(doc(db,"cats",c[0]));toast(t("ok2"))}catch(e){toast(t("failed"))}});
+}
+function trainsAdmin(){
+  let h=`<h2>${t("mtrains")}</h2>`;if(!tdb.length)h+=`<div class="btns"><button id="imp">${t("imp")}</button></div>`;
+  tdb.slice().sort((a,b)=>(a.dirn+a.dep)<(b.dirn+b.dep)?-1:1).forEach(r=>h+=`<div class="card" style="margin:8px 0"><b>${esc(r.no)}</b> ${esc(r.from)} → ${esc(r.to)} • ${esc(r.dep)}${r.arr?" → "+esc(r.arr):""}<div class="btns" style="margin-top:6px"><button class="no" data-td="${r.id}">${t("del")}</button></div></div>`);
+  h+=`<h3>${t("addtrain")}</h3><select id="nd"><option value="out">${t("trTo")}</option><option value="in">${t("trFrom")}</option></select><label>${t("fNo")}</label><input id="nn"><label>${t("fFrom")}</label><input id="nf" value="Shantipur"><label>${t("fTo")}</label><input id="nt" value="Sealdah"><label>${t("fDep")}</label><input id="ndp" type="time"><label>${t("fArr")}</label><input id="nar" type="time"><label>${t("fVia")}</label><textarea id="nv" rows="2"></textarea><div class="btns" style="margin-top:12px"><button class="alt" id="fx">${t("shut")}</button><button id="tok">${t("save")}</button></div>`;
+  open_(h);$("fx").onclick=close_;
+  const im=$("imp");if(im)im.onclick=async()=>{try{for(const r of SEEDTR)await addDoc(collection(db,"trains"),{...r,ts:Date.now()});toast(t("saved"))}catch(e){toast(t("failed"))}};
+  $("sheet").querySelectorAll("[data-td]").forEach(b=>b.onclick=async()=>{try{await deleteDoc(doc(db,"trains",b.dataset.td));toast(t("ok2"))}catch(e){toast(t("failed"))}});
+  $("tok").onclick=async()=>{const d={dirn:$("nd").value,no:$("nn").value.trim(),from:$("nf").value.trim(),to:$("nt").value.trim(),dep:$("ndp").value,arr:$("nar").value,via:$("nv").value.trim(),ts:Date.now()};if(!d.no||!d.dep){toast(t("needname"));return}try{await addDoc(collection(db,"trains"),d);toast(t("saved"))}catch(e){toast(t("failed"))}};
+}
+async function backup(){try{const o={};for(const n of["listings","ads","trains","cats","notices"]){const s=await getDocs(collection(db,n));o[n]=s.docs.map(x=>({_id:x.id,...x.data()}))}const st=await getDoc(doc(db,"settings","main"));o.settings=st.data()||{};const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(o,null,2)],{type:"application/json"}));a.download="amader-shantipur-backup.json";a.click()}catch(e){toast(t("failed"))}}
+
+$("q").oninput=render;$("sq").oninput=render;
+if(!GUEST)setTimeout(()=>{if(!USER&&!GUEST)loginSheet(false)},900);
+render();renderAd();
+
+const snap=(q,fn)=>onSnapshot(q,s=>fn(s.docs.map(x=>({...x.data(),id:x.id}))),e=>console.warn(e));
+snap(query(collection(db,"listings"),orderBy("ts","desc")),a=>{live=a;render()});
+snap(query(collection(db,"ads"),orderBy("ts","desc")),a=>{ads=a.filter(d=>!d.until||d.until>Date.now());renderAd();texts()});
+snap(collection(db,"cats"),a=>{cdb=a;rebuild();render()});
+snap(collection(db,"trains"),a=>{tdb=a;render()});
+onSnapshot(doc(db,"settings","main"),s=>{const d=s.data()||{};UPI=d.upi||"";PR={p7:d.p7,p15:d.p15,p30:d.p30};HP=d.photo||"";if(HP){const h=$("hero");h.style.backgroundImage=`linear-gradient(rgba(11,58,44,.55),rgba(11,58,44,.8)),url('${HP}')`;h.style.backgroundSize="cover";h.style.backgroundPosition="center"}},()=>{});
+onSnapshot(doc(db,"stats","main"),s=>{const d=s.data()||{};VIS=d.users||0;TAPS=d.taps||0;texts()},()=>{});
+if(!sg("as_c")){updateDoc(doc(db,"stats","main"),{users:increment(1)}).then(()=>ss("as_c","1")).catch(()=>{})}
+
+onAuthStateChanged(auth,async u=>{
+  USER=u;ME=u?u.uid:null;isAdmin=false;unsubs.forEach(f=>f());unsubs=[];notices=[];pending=[];
+  if(u){
+    try{isAdmin=(await getDoc(doc(db,"admins",u.uid))).exists()}catch(e){}
+    unsubs.push(snap(isAdmin?query(collection(db,"notices"),orderBy("ts","desc"),limit(50)):query(collection(db,"notices"),where("to","==",u.uid)),a=>{notices=a;texts()}));
+    if(isAdmin){
+      try{const s=await getDoc(doc(db,"stats","main"));if(!s.exists())await setDoc(doc(db,"stats","main"),{users:0,taps:0})}catch(e){}
+      unsubs.push(snap(query(collection(db,"submissions"),orderBy("ts","asc")),a=>{pending=a;texts()}));
+    }
+  }
+  render();renderAd();
+});
+if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
+</script>
+</body>
+</html>

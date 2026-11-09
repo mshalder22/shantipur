@@ -1,0 +1,44 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function isAdmin() {
+      return signedIn() &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    match /admins/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    match /listings/{id} { allow read: if true; allow write: if isAdmin(); }
+    match /ads/{id}      { allow read: if true; allow write: if isAdmin(); }
+    match /cats/{id}     { allow read: if true; allow write: if isAdmin(); }
+    match /trains/{id}   { allow read: if true; allow write: if isAdmin(); }
+    match /settings/{id} { allow read: if true; allow write: if isAdmin(); }
+
+    match /stats/{id} {
+      allow read: if true;
+      allow create: if isAdmin();
+      allow update: if isAdmin() || (
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['users', 'taps']) &&
+        request.resource.data.users <= resource.data.users + 1 &&
+        request.resource.data.taps <= resource.data.taps + 1
+      );
+    }
+
+    match /submissions/{id} {
+      allow create: if signedIn() && request.resource.data.by == request.auth.uid
+                    && request.resource.data.name is string
+                    && request.resource.data.name.size() < 200;
+      allow read: if isAdmin() || (signedIn() && resource.data.by == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
+    match /notices/{id} {
+      allow read: if isAdmin() || (signedIn() && resource.data.to == request.auth.uid);
+      allow write: if isAdmin();
+    }
+  }
+}
